@@ -1,0 +1,45 @@
+# Site settings
+
+title: Fulvio | FSD
+locale: en_US
+url: http://fulvi0.github.io/fulvi0
+description: 'Full Stack Developer'
+baseurl: '/fulvi0'
+google_analytics: 'UA-52597768-6'
+# disqus_shortname: 'your-disqus-name'
+
+author:
+  name: 'Carlos F. Antonio'
+  email: fulvio.ac@gmail.com
+  twitter_username: fulvi0
+  github_username: fulvi0
+  linkedin_username: carlosfantonio
+
+defaults:
+  -
+    scope:
+      path: ''
+      type: 'posts'
+    values:
+        layout: 'post'
+
+# Build settings
+destination: _site
+paginate: 10
+permalink: /:year/:title/
+markdown: kramdown
+highlighter: rouge
+
+sass:
+    sass_dir: _sass
+    style: compressed
+
+kramdown:
+  # use Github Flavored Markdown
+  input: GFM
+  # do not replace newlines by <br>s
+  hard_wrap: false
+
+gems: ['jekyll-paginate']
+exclude: ['README.md', 'Gemfile', 'Gemfile.lock', 'screenshot.png', 'vendor']
+

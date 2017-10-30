@@ -1,0 +1,53 @@
+<h4 id="seed-your-rails-app-using-a-csv-files">Seed your Rails app using a csv files.</h4>
+
+<p>If you are building a webapp with Ruby on Rails, you will maybe have the need to
+load data, so here is a good way to insert data in the database, using a csv file
+and couple lines of code.</p>
+
+<p>Open the <code class="highlighter-rouge">project/db/seed.rd</code> file of your project and adding this few lines.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'csv'</span>
+
+<span class="no">CSV</span><span class="p">.</span><span class="nf">foreach</span><span class="p">(</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">'path/to/file.csv'</span><span class="p">),</span> <span class="ss">headers: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">row</span><span class="o">|</span>
+    <span class="c1"># code...</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+<blockquote>
+  <p><strong>CSV</strong> This class provides a complete interface to CSV files and data.
+It offers tools to enable you to read and write to and from Strings or IO objects, as needed.
+<a href="http://goo.gl/PuiYw7">Source</a>.</p>
+</blockquote>
+
+<p>Where <code class="highlighter-rouge">Rails.root.join</code> represents a pathname which locates a file in a filesystem,
+<code class="highlighter-rouge">headers: true</code> we are specifying that the source file have header, will ignore
+the first row, in case we don’t have header just turn to <code class="highlighter-rouge">false</code> the option.</p>
+
+<p>Then lets indicate the corresponding field of our table where will insert with.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Model</span><span class="p">.</span><span class="nf">create!</span> <span class="k">do</span> <span class="o">|</span><span class="n">model</span><span class="o">|</span>
+    <span class="n">model</span><span class="p">.</span><span class="nf">file1</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">model</span><span class="p">.</span><span class="nf">file2</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">model</span><span class="p">.</span><span class="nf">file3</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">model</span><span class="p">.</span><span class="nf">file4</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>For complete with the seed, run in the terminal <code class="highlighter-rouge">$ bundle exec rake db:seed</code></p>
+
+<hr />
+<p>The final code should look like:
+```ruby
+require ‘csv’</p>
+
+<p>CSV.foreach(Rails.root.join(‘path/to/file.csv’), headers: true) do |row|
+  Model.create! do |model|
+    mode.fiel1 = row[0]
+    mode.fiel2 = row[1]
+    mode.fiel3 = row[2]
+    mode.fiel4 = row[3]
+  end
+end
+```</p>
+

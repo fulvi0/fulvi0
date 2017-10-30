@@ -1,0 +1,56 @@
+<h1 id="how-to-populate-a-rails-5-application-with-sample-data">How to populate a Rails 5 Application with sample Data.</h1>
+
+<p><em>This small guide will is to help you to populate your application with sample data that may useful for test during the development.</em></p>
+
+<p>I’ll be using the following scaffold for the explanations purposes. 
+<code class="highlighter-rouge">$ rails g scaffold house family:string members:integer number:integer address:string</code></p>
+
+<p>So, beginning, as usual, we Need to add in the <strong>Gemfile</strong> the <a href="https://github.com/ryanb/populator"><code class="highlighter-rouge">gem 'populator'</code></a> and <a href="https://github.com/stympy/faker"><code class="highlighter-rouge">gem 'faker'</code></a> in <code class="highlighter-rouge">group :development</code> and/or ` group :test`, in case you need for the test environment.</p>
+
+<p>After <code class="highlighter-rouge">$ bundle install</code>, let open <code class="highlighter-rouge">seed.rb</code> file located under <code class="highlighter-rouge">db/</code> then will add a few lines.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># The gem will populate 10 times in the model House and will include sample data provided by faker gem.</span>
+<span class="no">House</span><span class="p">.</span><span class="nf">populate</span> <span class="mi">10</span> <span class="k">do</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span>
+    <span class="n">m</span><span class="p">.</span><span class="nf">family</span> <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="p">.</span><span class="nf">last_name</span>
+    <span class="n">m</span><span class="p">.</span><span class="nf">members</span> <span class="o">=</span> <span class="mi">3</span><span class="p">.</span><span class="nf">.</span><span class="mi">6</span>
+    <span class="n">m</span><span class="p">.</span><span class="nf">number</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span>
+    <span class="n">m</span><span class="p">.</span><span class="nf">address</span> <span class="o">=</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Address</span><span class="p">.</span><span class="nf">street_address</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>After saving the file we will run in the terminal <code class="highlighter-rouge">$ rails db:seed</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">[</span>3] pry<span class="o">(</span>main<span class="o">)</span>&gt; House.all
+  House Load <span class="o">(</span>2.0ms<span class="o">)</span>  SELECT <span class="s2">"houses"</span>.<span class="k">*</span> FROM <span class="s2">"houses"</span>
+<span class="gp">=&gt; </span><span class="o">[</span><span class="c">#&lt;House:0x000000035f3bd0 id: 1, family: "Schowalter", members: 3, number: 7, address: "3279 Joey Spring", created_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00, updated_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00&gt;,</span>
+ <span class="c">#&lt;House:0x000000035e2330 id: 2, family: "Hagenes", members: 4, number: 4, address: "145 Sipes Islands", created_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00, updated_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00&gt;,</span>
+ <span class="c">#&lt;House:0x000000035e1f20 id: 3, family: "Dach", members: 5, number: 6, address: "32723 Alize Groves", created_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00, updated_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00&gt;,</span>
+ <span class="c">#&lt;House:0x000000035e1ca0 id: 4, family: "McCullough", members: 6, number: 10, address: "787 Marvin Dale", created_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00, updated_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00&gt;,</span>
+ <span class="c">#&lt;House:0x000000035e1958 id: 5, family: "Ebert", members: 4, number: 10, address: "8976 Cartwright Spur", created_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00, updated_at: Mon, 02 Oct 2017 17:01:24 UTC +00:00&gt;,</span>
+ ...
+<span class="o">[</span>4] pry<span class="o">(</span>main<span class="o">)</span>&gt; 
+</code></pre>
+</div>
+<p>As you can see the application populate our developemnt database with 10 records and filled with sample data.</p>
+
+<hr />
+<p>Note: in case you got an error after ran the seed and the error is about:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">rails</span> <span class="n">aborted!</span>
+<span class="no">NoMethodError</span><span class="p">:</span> <span class="n">undefined</span> <span class="nb">method</span> <span class="sb">`sanitize' for #&lt;Class:0x007fb8f28082e0&gt;
+</span></code></pre>
+</div>
+<p>The error have been reported in the <a href="https://github.com/ryanb/populator/issues/30#issuecomment-328362117">repo in github</a> and there is a workaround for it where you have to replace a line in the file <code class="highlighter-rouge">populator/lib/populator/factory.rb</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="k">def</span> <span class="nf">rows_sql_arr</span>
+        <span class="vi">@records</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">record</span><span class="o">|</span>
+ <span class="o">-</span>        <span class="n">quoted_attributes</span> <span class="o">=</span> <span class="n">record</span><span class="p">.</span><span class="nf">attribute_values</span><span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="vi">@model_class</span><span class="p">.</span><span class="nf">sanitize</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">}</span> <span class="c1"># replace this line</span>
+ <span class="o">+</span>        <span class="n">quoted_attributes</span> <span class="o">=</span> <span class="n">record</span><span class="p">.</span><span class="nf">attribute_values</span><span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="vi">@model_class</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span><span class="nf">quote</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">}</span> <span class="c1"># with this one</span>
+          <span class="s2">"(</span><span class="si">#{</span><span class="n">quoted_attributes</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">', '</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+</code></pre>
+</div>
+
+<p>As well if you need to implement this project in different places, I recommend to fork the populator gem, make the previous modification, <code class="highlighter-rouge">push</code> to your repository in GitHub and use this line in your <code class="highlighter-rouge">Gemfile</code> with <code class="highlighter-rouge">gem 'populator', :github =&gt; 'fulvi0/populator'</code>.</p>

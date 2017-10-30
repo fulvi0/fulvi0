@@ -5,8 +5,6 @@ excerpt: "This small guide will is to help you to populate your application with
 tags: [post, code, ruby, ruby on rails, fake.gem, populate.gem]
 ---
 
-# How to populate a Rails 5 Application with sample Data.
-
 *This small guide will is to help you to populate your application with sample data that may useful for test during the development.*
 
 I'll be using the following scaffold for the explanations purposes. 
